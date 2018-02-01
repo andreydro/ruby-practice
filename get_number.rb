@@ -5,8 +5,9 @@ puts "Welcome to 'Get my Number!'"
 
 # Получение имени игрока и вывода приветствия.
 print "What`s your name? "
-input = gets.chomp
-puts "Welcome, #{input}!"
+input = gets
+name = input.chomp
+puts "Welcome, #{name}!"
 
 # Сохранение случайного числа.
 puts "I`ve got a random number between 1 and 100."
@@ -42,6 +43,6 @@ until num_guesses == 10 ||  guessed_it
 end
 
 # Если попыток не осталось, сообщить загаданное число.
-if not guessed_it
+unless guessed_it
   puts "Sorry. You didn`t get my number. (It was #{target}.)"
 end
