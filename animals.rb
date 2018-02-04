@@ -43,6 +43,11 @@ class Bird < Animal
 end
 
 class Dog < Animal
+
+	def to_s
+	  "#{@name} the dog, age #{age}"
+	end
+
 end
 
 class Cat < Animal
@@ -57,19 +62,16 @@ class Armadillo < Animal
 
   def move(destination)
   	puts "#{@name} unrolls!"
-  	puts "#{@name} runs to the #{destination}."
+  	super
   end
 end
 
-whiskers = Cat.new
-whiskers.name = "Whiskers"
-fido = Dog.new
-fido.name = "Fido"
-polly = Bird.new
-polly.name = "Polly"
+lucy = Dog.new
+lucy.name = "Lucy"
+lucy.age = 4
 
-polly.age = 2
-polly.report_age
-fido.move("yard")
-whiskers.talk
-polly.talk
+rex = Dog.new
+rex.name = "Rex"
+rex.age = 2
+
+puts lucy.to_s, rex.to_s
