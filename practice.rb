@@ -1,29 +1,21 @@
-numbers = [2, 3, 4]
-
-squares = []
-
-numbers.each do |number|
-  squares << number ** 2
+def find_adjective(string)
+  words = string.split(" ")
+  index = words.find_index("is")
+  words[index + 1]
 end
 
-p squares
-
-numbers = [2, 3, 4]
-
-cubes = []
-
-numbers.each do |number|
-  cubes << number ** 3
+lines = []
+File.open("reviews.txt") do |review_file|
+  lines = review_file.readlines
 end
 
-p cubes
+relevant_lines = lines.find_all { |line| line.include?("Truncated")}
+reviews = relevant_lines.reject { |line| line.include?("--")}
 
-phone_numbers = ["1-800-555-0199","1-402-555-0123"]
-
-area_codes = []
-
-phone_numbers.each do |phone_number|
-  area_codes << phone_number.split("-")[1]
+adjectives = reviews.map do |review|
+  adjective = find_adjective(review)
+  "'#{adjective.capitalize}'"
 end
 
-p area_codes
+puts "The critics agree, Truncated is:"
+puts adjectives
