@@ -45,13 +45,13 @@ p votes
 
 #names = ["Simone", "Ferriss", "Jeanie", "Cameron"]
 
-#names.each do |name|
-#  if school[name]
-#  	puts "#{name} is present"
-#  else
-#  	puts "#{name} is absent"
-#  end
-#end
+## names.each do |name|
+##  if school[name]
+##  	puts "#{name} is present"
+##  else
+##  	puts "#{name} is absent"
+##  end
+##end
 
 votes = Hash.new(0)
 votes["Amber Graham"] = 1
