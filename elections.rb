@@ -34,5 +34,5 @@ def print_summary(candidate)
   puts "Birthplace: #{candidate.birthplace}"
 end
 
-candidate = Candidate.new("Amy Nguyen", age: 49, occupation: "Attorney")
+candidate = Candidate.new("Amy Nguyen", age: 49, occupation: "Attorney", hobby: "Snowboard", birthplace: "Tokio")
 p candidate
