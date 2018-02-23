@@ -9,9 +9,7 @@ polaris = altair
 polaris.name = 'Polaris'
 vega = polaris
 vega.name = 'Vega'
-
 #puts altair.name, polaris.name, vega.name
-
 class LoveInterest
   
   def request_date
