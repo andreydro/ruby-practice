@@ -1,1 +1,1 @@
-Practicing ruby code from "Learn Ruby" book by O`Reilly
+Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly
