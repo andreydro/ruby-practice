@@ -1,1 +1,1 @@
-Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly
+Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly and trying tasks from other resources
