@@ -1,62 +1,40 @@
 require 'terminal-table'
 require 'fuzzy_match'
 require 'optparse'
-# :reek:RepeatedConditional
-# :reek:TooManyStatements
-# :reek:UncommunicativeVariableName
-# :reek:UtilityFunction
-# :reek:FeatureEnvy
-# rubocop:disable Metrics/ClassLength
+require 'russian'
+require_relative 'config'
+
 class Raper
-  SWEAR_WORDS_ARRAY = [
-    'блять', 'блядь', 'бляди', 'ебать', 'ёб', 'бля', 'блядина', 'блядский', 'блядистость', 'блядогон',
-    'блядословник', 'блядский', 'блядство', 'въебаться', 'взбляд', 'впиздячил', 'выблядовал', 'выблядок',
-    'выебон', 'выёбывается', 'глупизди', 'доебался', 'ебанёшься', 'ебанул', 'ебашит', 'ёбнул', 'ебало',
-    'ебанулся', 'ебнул', 'жидоёб', 'жидоёбский', 'заёб', 'изъебнулся', 'заебал', 'заебись', 'козлоёб',
-    'козлоёбище', 'хуй', 'пизда', 'пиздец', '\*', 'сука'
-  ].freeze
+  PRONOUNS = PRONOUNS_ARRAY.join('|')
 
   SWEAR_WORDS = SWEAR_WORDS_ARRAY.join('|')
 
-  def filter_rapers_from_the_list(file_name)
-    first_filter = file_name.sub(/ротив_/, '')
-    second_filter = first_filter.sub(/_\(.*/, '')
-    third_filter = second_filter.sub(%r/^rap-battles\/_/, '')
-    third_filter.sub(/_$/, '')
+  def all_data_storage
+    Dir.glob('rap-battles/*').each_with_object({}) do |file_name, hash|
+      hash[file_name] = File.read(file_name)
+    end
   end
 
   def list_all_rapers
-    raper_storage = []
+    filter_rapers.flatten.uniq
+  end
 
-    Dir.glob('rap-battles/*') do |file_name|
-      filtered_data = filter_rapers_from_the_list(file_name)
-      raper_storage << filtered_data.split('_п')
-      raper_storage.flatten!.uniq!
+  def avg_number_of_battles(name)
+    all_data_storage.inject(0) do |counter, (file_name, _file_content)|
+      counter += file_name.scan(name).size
+      counter
     end
-    raper_storage
   end
 
   def number_of_battles(name)
-    battles_storage = [1]
-
-    Dir.glob('rap-battles/*') do |file_name|
-      battles_storage << file_name.match(name)
-      battles_storage.reject!(&:nil?)
-    end
-    battles_storage.size / 2
+    avg_number_of_battles(name) / 2
   end
 
   def number_of_swear_words(name)
-    swear_words_storage = []
-
-    Dir.glob('rap-battles/*') do |file_name|
-      if file_name.match(name)
-        text = File.read(file_name)
-        swear_words_storage << text.scan(/#{SWEAR_WORDS}/)
-        swear_words_storage.flatten!
-      end
+    all_data_storage.inject(0) do |counter, (file_name, file_content)|
+      counter += file_content.scan(/#{SWEAR_WORDS}/).size if file_name.match(name)
+      counter
     end
-    swear_words_storage.size
   end
 
   def average_number_swearing_words_in_battle(name)
@@ -65,128 +43,117 @@ class Raper
   end
 
   def number_of_words_in_rounds(name)
-    number_of_words_in_rounds = 0
-
-    Dir.glob('rap-battles/*') do |file_name|
-      if file_name.match(name)
-        text = File.read(file_name)
-        number_of_words_in_rounds += text.split(' ').length
-      end
+    all_data_storage.inject(0) do |counter, (file_name, file_content)|
+      counter += file_content.split(/\W/).size if file_name.match(name)
+      counter
     end
-    number_of_words_in_rounds
   end
 
   def number_of_rounds(name)
-    round_words = []
-
-    Dir.glob('rap-battles/*') do |file_name|
-      if file_name.match(name)
-        text = File.read(file_name)
-        round_words << text.match(/Раунд/)
-        round_words.reject!(&:nil?)
-      end
+    all_data_storage.inject(1) do |counter, (file_name, file_content)|
+      counter += file_content.scan(/Раунд \w/).size if file_name.match(name)
+      counter
     end
-    round_words
   end
 
   def average_number_words_in_round(name)
-    number_of_rounds = number_of_rounds(name).size
-    number_of_rounds = 1 if number_of_rounds.zero?
-
-    number_of_words_in_rounds(name) / number_of_rounds
+    number_of_words_in_rounds(name) / number_of_rounds(name)
   end
 
-  def sort_and_reverse_hash(hash_for_sorting, sorted_storage)
-    hash_for_sorting = hash_for_sorting.sort_by { |_key, value| value[1] }
-    hash_for_sorting.reverse!
-    hash_for_sorting.each do |elem|
-      sorted_storage[elem[0]] = elem[1]
-    end
-    sorted_storage
-  end
-
-  def statistics(number)
+  def statistics(number_of_rapers)
     unsorted_storage = {}
-    sorted_storage = {}
     list_all_rapers.each do |raper|
-      storage_for_each_raper = []
-      storage_for_each_raper << number_of_battles(raper) << number_of_swear_words(raper)
-      storage_for_each_raper << average_number_swearing_words_in_battle(raper) << average_number_words_in_round(raper)
-      unsorted_storage[raper] = storage_for_each_raper
+      unsorted_storage[raper] = [
+        number_of_battles(raper), number_of_swear_words(raper),
+        average_number_swearing_words_in_battle(raper), average_number_words_in_round(raper)
+      ]
     end
-    sorted_storage = sort_and_reverse_hash(unsorted_storage, sorted_storage)
-    sorted_storage.first(number.to_i)
+    sorted_storage = sort_and_reverse_hash(unsorted_storage)
+    sorted_storage.first(number_of_rapers.to_i).map { |elem| [elem[0], elem[1]] }.to_h
   end
 
-  # rubocop:disable Metrics/AbcSize
-  def make_table(number)
-    filtered_data = {}
-    statistics(number).each do |elem|
-      filtered_data[elem[0]] = elem[1]
-    end
+  def make_table(number_of_rapers)
     rows = []
-    filtered_data.each do |k, v|
-      rows << [k.to_s, v[0].to_s + ' баттлов', v[1].to_s + ' нецензурных слов',
-               v[2].to_s + ' слова на баттл', v[3].to_s + ' слова в раунде']
+    statistics(number_of_rapers).each do |key, value|
+      rows << [key.to_s,
+               "#{value[0]} #{Russian.p(value[0], 'баттл', 'баттла', 'баттлов')}",
+               "#{value[1]} нецензурных слов",
+               "#{value[2]} слова на баттл",
+               "#{value[3]} слова в раунде"]
     end
-    Terminal::Table.new rows: rows
-  end
-  # rubocop:enable Metrics/AbcSize
-
-  def count_all_duplicates(array_storage)
-    array_storage.each_with_object(Hash.new(0)) { |word, counts| counts[word] += 1 }
+    Terminal::Table.new(rows: rows)
   end
 
-  def storage_for_all_text(name)
-    text_storage = ''
-    if list_all_rapers.include? name
-      Dir.glob('rap-battles/*') do |file_name|
-        if file_name.match(name)
-          text = File.read(file_name)
-          text_storage += text
-        end
-      end
-    end
-    text_storage
-  end
-
-  def the_most_used_words(top_words, name)
-    array_storage = storage_for_all_text(name).gsub(/,|'/, ' ').split.reject! { |x| x.length < 4 }
-    array_storage.map(&:capitalize!)
-    hash_storage = count_all_duplicates(array_storage)
-    hash_storage = hash_storage.sort_by { |_key, value| value }.reverse.to_h
-    hash_storage.first(top_words.to_i)
-  end
-
-  # rubocop:disable Metrics/AbcSize
   def print_top_words(top_words, name)
-    if list_all_rapers.include? name
+    if list_all_rapers.include?(name)
       the_most_used_words(top_words, name).each do |elem|
-        puts elem[0].to_s + ' - ' + elem[1].to_s + ' раз'
+        puts "#{elem[0]} - #{elem[1]} #{Russian.p(elem[1], 'раз', 'раза', 'раз')}"
       end
     else
       puts "Репер #{name} не известен мне. Зато мне известны: "
       puts list_all_rapers
     end
   end
-  # rubocop:enable Metrics/AbcSize
+
+  private
+
+  def filter_rapers_from_the_list(file_name)
+    filter = file_name.sub(/ротив_/, '').sub(/_\(.*/, '')
+    filter.sub(%r/^rap-battles\/_/, '').sub(/_$/, '')
+  end
+
+  def filter_rapers
+    all_data_storage.inject([]) do |array, (file_name, _file_content)|
+      filtered_data = filter_rapers_from_the_list(file_name).split('_п')
+      array << filtered_data
+    end
+  end
+
+  def sort_and_reverse_hash(hash_for_sorting)
+    hash_for_sorting = hash_for_sorting.sort_by { |_, value| value [1] }
+    hash_for_sorting.reverse!
+    hash_for_sorting.map { |elem| [elem[0], elem[1]] }.to_h
+  end
+
+  def count_all_duplicates(array_storage)
+    array_storage.each_with_object(Hash.new(0)) { |word, counts| counts[word] += 1 }
+  end
+
+  def storage_for_all_text(name)
+    all_data_storage.inject('') do |string, (file_name, file_content)|
+      string += file_content if file_name.match(name)
+      string
+    end
+  end
+
+  def the_most_used_words(top_words, name)
+    array_storage = storage_for_all_text(name).gsub(/,|'/, ' ').split
+    array_storage.delete_if { |elem| elem.match(/#{PRONOUNS}/) }.map!(&:capitalize)
+    hash_storage = count_all_duplicates(array_storage)
+    hash_storage = hash_storage.sort_by { |_, value| value }.reverse.to_h
+    hash_storage.first(top_words.to_i)
+  end
 end
-# rubocop:enable Metrics/ClassLength
 
 options = { 'top-bad-words' => nil, 'top-words' => 30, 'name' => nil }
 
 parser = OptionParser.new do |opts|
-  opts.banner = 'Info for all options'
-  opts.on('-bad-words', '--top-bad-words=number', 'Yeap, its top-bad-words') do |number|
+  opts.banner = 'Use help for that programm'
+  opts.on('-bad-words', '--top-bad-words=number', 'Enter number of rapers you want to see') do |number|
     options['top-bad-words'] = number
   end
 
-  opts.on('-top-words', '--top-words=number', 'Yeap, its top-words') do |number|
+  opts.on('-top-words', '--top-words=number', 'Enter number of top words you want to see') do |number|
     options['top-words'] = number
   end
 
-  opts.on('name', '--name=name', 'Yeap, its name') do |name|
+  opts.on('-n', '--name=name', 'Enter name of the raper you want to see') do |name|
     options['name'] = name
+  end
+
+  opts.on('-h', '--help', 'Use this option for more info') do
+    puts opts
+    exit
   end
 end
 
