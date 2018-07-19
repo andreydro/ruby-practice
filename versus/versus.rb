@@ -9,6 +9,7 @@ require_relative 'utility_methods'
 require_relative 'list_of_rapers'
 require_relative 'print_table'
 require_relative 'print_top_words'
+require_relative 'raper_decorator'
 
 options = { 'top-bad-words' => nil, 'top-words' => 30, 'name' => nil }
 

@@ -7,11 +7,10 @@ class PrintTopWords
     print_top_words(@top_words, @name)
   end
 
-  # :reek:DuplicateMethodCall # ridiculous warning
   def print_top_words(top_words, name)
     if @rapers_storage.include?(name)
       UtilityMethods.the_most_used_words(top_words, name).each do |elem|
-        puts "#{elem[0]} - #{elem[1]} #{Russian.p(elem[1], 'раз', 'раза', 'раз')}"
+        puts "#{elem[0]} - #{elem[1]} #{Russian.p(elem.last, 'раз', 'раза', 'раз')}"
       end
     else
       puts "Репер #{name} не известен мне. Зато мне известны: "

@@ -1,5 +1,7 @@
 # This class is used for single raper methods
 class Raper
+  attr_reader :raper_name
+
   SWEAR_WORDS = YAML.load_file('config.yml')['SWEAR_WORDS_ARRAY'].join('|')
 
   def initialize(raper_name)
@@ -24,8 +26,7 @@ class Raper
   end
 
   def average_number_swearing_words_in_battle
-    average = number_of_swear_words.fdiv(number_of_battles)
-    average.round(2)
+    number_of_swear_words.fdiv(number_of_battles)
   end
 
   def number_of_words_in_rounds

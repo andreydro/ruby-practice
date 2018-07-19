@@ -1,7 +1,7 @@
 # This module storing rapers
 module ListOfRapers
   def self.list_all_rapers
-    ListOfRapers.filter_rapers.flatten.uniq
+    @list_all_rapers ||= ListOfRapers.filter_rapers.flatten.uniq
   end
 
   def self.filter_rapers
