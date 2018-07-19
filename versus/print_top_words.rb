@@ -1,0 +1,21 @@
+# This class print top words to the terminal
+class PrintTopWords
+  def initialize(top_words, raper_name)
+    @top_words = top_words
+    @name = raper_name
+    @rapers_storage = ListOfRapers.list_all_rapers
+    print_top_words(@top_words, @name)
+  end
+
+  # :reek:DuplicateMethodCall # ridiculous warning
+  def print_top_words(top_words, name)
+    if @rapers_storage.include?(name)
+      UtilityMethods.the_most_used_words(top_words, name).each do |elem|
+        puts "#{elem[0]} - #{elem[1]} #{Russian.p(elem[1], 'раз', 'раза', 'раз')}"
+      end
+    else
+      puts "Репер #{name} не известен мне. Зато мне известны: "
+      puts @rapers_storage
+    end
+  end
+end
