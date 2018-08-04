@@ -4,4 +4,4 @@ Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly
 
 + versus app about battles between different rappers
 
-+ Sinatra Articles Analyser
++ Sinatra Articles Analyser(+ Redis)
