@@ -1,6 +1,6 @@
 Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly 
 
-+ trying tasks from other resources
++ trying tasks from different resources
 
 + Versus App about battles between rapper from VERSUS (SPB)
 
