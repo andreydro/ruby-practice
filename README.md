@@ -4,4 +4,4 @@ Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly
 
 + Versus App about battles between rapper from SPB VERSUS 
 
-+ Sinatra Articles Analyser (+ Redis database) - parsing comments from IT Articles from onliner.by
++ Sinatra Articles Analyser (+ Redis database) - parsing comments from IT Articles from Onliner.by
