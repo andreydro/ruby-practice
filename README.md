@@ -6,4 +6,4 @@ Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly
 
 + Sinatra Articles Analyser (+ Redis database) - parsing comments from IT Articles from Onliner.by
 
-+ TDD course (Rspec, Cucumber)
++ TDD course (Rspec, Capybara, Cucumber)
