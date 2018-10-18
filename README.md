@@ -1,4 +1,6 @@
-Practicing small pieces of Ruby code from "Learn Ruby" book by O`Reilly 
+In that repository you can find small pieces of my Ruby code:
+
++ from "Learn Ruby" book by O`Reilly 
 
 + trying tasks from different resources
 
