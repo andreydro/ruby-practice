@@ -4,7 +4,7 @@ In that repository you can find small pieces of my Ruby code:
 
 + trying tasks from different resources
 
-+ Versus App about battles between rapper from SPB VERSUS 
++ Versus App about battles between rapper from "VERSUS" TV show
 
 + Sinatra Articles Analyser (+ Redis database) - parsing comments from IT Articles from Onliner.by
 
