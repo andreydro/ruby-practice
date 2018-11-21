@@ -1,0 +1,3 @@
+Перевод статьи "Best Practices for Designing a Pragmatic RESTful API" в процессе...
+
+Ссылка на статью https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#requirements
