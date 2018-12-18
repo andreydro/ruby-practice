@@ -9,3 +9,5 @@ In that repository you can find small pieces of my Ruby code:
 + Sinatra Articles Analyser (+ Redis database) - parsing comments from IT Articles from Onliner.by
 
 + practice from Pluralsight TDD course (Rspec, Capybara, Cucumber)
+
++ writing basic algorithms
