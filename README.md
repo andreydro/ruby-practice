@@ -10,4 +10,4 @@ In that repository you can find small pieces of my Ruby code:
 
 + practice from Pluralsight TDD course (Rspec, Capybara, Cucumber)
 
-+ writing basic algorithms
++ writing basic algorithms...
